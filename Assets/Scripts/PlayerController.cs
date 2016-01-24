@@ -5,7 +5,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerController : MonoBehaviour {
 
-	public float moveForce = 5, boostMltiplier = 10;
+	public float moveForce = 5, boostMltiplier = 10, normalSpeed = 1;
 	Rigidbody2D myBody;
 
 	void Start () {
@@ -19,8 +19,8 @@ public class PlayerController : MonoBehaviour {
 		bool isSprinting = CrossPlatformInputManager.GetButton ("Sprint");
 		// Return True if sprint button is being pressed
 		// Return boostMltiplier if true else 1
-		Debug.Log (isSprinting ? boostMltiplier : 3);
+		Debug.Log (isSprinting ? boostMltiplier : normalSpeed);
 		// Move my adding The Force to the body
-		myBody.AddForce(moveVec * ( isSprinting ? boostMltiplier : 3));
+		myBody.AddForce(moveVec * ( isSprinting ? boostMltiplier : normalSpeed));
 	}
 }
