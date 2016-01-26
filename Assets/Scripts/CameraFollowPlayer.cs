@@ -1,20 +1,3 @@
-// ﻿using UnityEngine;
-// using System.Collections;
-//
-// public class CameraFollowPlayer: MonoBehaviour {
-// 	public Transform target;
-// 	public float smooth= 5.0f;
-// 	public targetx = target.postion[0];
-// 	public targety = target.postion[1];
-// 	void  Update (){
-// 	    transform.position = Vector2.Lerp (
-// 	        transform.position, target.position,
-// 	        Time.deltaTime * smooth);
-// 	}
-// }
-//
-
-
 using UnityEngine;
 using System.Collections;
 
@@ -34,6 +17,5 @@ using System.Collections;
              Vector3 destination = transform.position + delta;
              transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
          }
-
      }
  }
