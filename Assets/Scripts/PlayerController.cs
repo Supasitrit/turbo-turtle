@@ -69,7 +69,5 @@ public class PlayerController : MonoBehaviour {
 		// Move my adding The Force to the body
 		myBody.AddForce(moveVec * ( isSprinting ? boostMltiplier : normalSpeed));
 		}
-
-
 	}
 }
