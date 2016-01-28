@@ -7,40 +7,62 @@ public class PlayerController : MonoBehaviour {
 
 	public float moveForce = 5, boostMltiplier = 10, normalSpeed = 0.5f;
 	public Transform map;
-	// public Vector3 mapColliderBounds;
+	public float maxSpeed = 50f;
+	public float rotSpeed = 180f;
 	public Vector3 mapRenderrerBounds;
 	public Vector3 playerPos, playerEdge;
-	private Vector3 velocity = Vector3.zero;
 	public Vector2 bounceback; // For bouncing player off walls
 	public float boundx,boundy;
 	Rigidbody2D myBody;
 
 	void Start () {
+		// Grab rigidbody of this sprite
 		myBody = this.GetComponents<Rigidbody2D>()[0];
-		transform.position = new Vector3(0, 0, 0);
-		// mapColliderBounds = GetComponent<Collider>().bounds.size;
+		// Get the map bounds
 	  mapRenderrerBounds = map.GetComponent<Renderer>().bounds.size;
+		// For creating bounceback from the wall vector
 		bounceback = new Vector2(0,0);
-		boundx = mapRenderrerBounds.x/2;// Get Right bound of the map
-		boundy = mapRenderrerBounds.y/2;// Get Up bound of the map
+		// Get Right bound of the map
+		boundx = mapRenderrerBounds.x/2;
+		// Get Up bound of the map
+		boundy = mapRenderrerBounds.y/2;
+		// Get edge of player sprite
+		playerEdge = this.GetComponent<Renderer>().bounds.size;
+
 	}
 
 	void FixedUpdate () {
 		// Get x and y from joystick
-		Vector2 moveVec = new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical")) * moveForce;
+		// Vector2 moveVec = new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical")) * moveForce;
 
-		bool isSprinting = CrossPlatformInputManager.GetButton ("Sprint");// This boolean return True if sprint button is being pressed
+		// ROTATE the ship.
 
-		playerPos = transform.position;// Get player position
-		playerEdge = this.GetComponent<Renderer>().bounds.size;// Get edge of player sprite
+		// Grab our rotation quaternion
+		Quaternion rot = transform.rotation;
 
-		// Debug.Log (isSprinting ? boostMltiplier : normalSpeed);
-		// Debug.Log (playerPos.x);
-		// Debug.Log (playerEdge);
-		Debug.Log (playerPos.y - playerEdge.y);
-		Debug.Log (-boundy);
-		// Debug.Log (boundy);
+		// Grab the Z euler angle
+		float z = rot.eulerAngles.z;
 
+		// Change the Z angle based on joystick input
+		z -= CrossPlatformInputManager.GetAxis("Horizontal") * rotSpeed * Time.deltaTime;
+
+		// Recreate the quaternion
+		rot = Quaternion.Euler( 0, 0, z );
+
+		// Feed the quaternion into our rotation
+		transform.rotation = rot;
+
+		// Get player position
+		playerPos = transform.position;
+		// Get input from button
+		if(CrossPlatformInputManager.GetButton("Accelerate")){
+			// The playerPos move when Accelerate is pressed
+			Vector3 velocity = new Vector3(0,maxSpeed * Time.deltaTime, 0);
+			playerPos += (rot * velocity)*2;
+			Debug.Log(velocity);
+		}
+
+		// Restrict player from getting out of the map bound
 		// Catch right bound
 		if ((playerPos.x + playerEdge.x) > boundx){
 			myBody.velocity = new Vector3(0,0,0);
@@ -67,7 +89,9 @@ public class PlayerController : MonoBehaviour {
 			myBody.MovePosition(bounceback);
 		}else{
 		// Move my adding The Force to the body
-		myBody.AddForce(moveVec * ( isSprinting ? boostMltiplier : normalSpeed));
+		// myBody.AddForce(moveVec * ( isAccelerating ? boostMltiplier : normalSpeed));
+		// Finally, update our position!!
+		transform.position = playerPos;
 		}
 	}
 }
