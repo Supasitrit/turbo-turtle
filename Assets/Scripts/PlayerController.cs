@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 	public Vector3 playerPos, playerEdge;
 	public Vector2 bounceback; // For bouncing player off walls
 	public float boundx,boundy;
+	public AudioClip AccelerateSound;
 	Rigidbody2D myBody;
 
 	void Start () {
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour {
 		// Get x and y from joystick
 		// Vector2 moveVec = new Vector2 (CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical")) * moveForce;
 
-		// ROTATE the ship.
+		// ROTATE the player.
 
 		// Grab our rotation quaternion
 		Quaternion rot = transform.rotation;
@@ -44,8 +45,11 @@ public class PlayerController : MonoBehaviour {
 		float z = rot.eulerAngles.z;
 
 		// Change the Z angle based on joystick input
-		z -= CrossPlatformInputManager.GetAxis("Horizontal") * rotSpeed * Time.deltaTime;
-
+		if (CrossPlatformInputManager.GetAxis("Horizontal")!=0){
+			z -= CrossPlatformInputManager.GetAxis("Horizontal") * rotSpeed * Time.deltaTime;
+		}else{
+			z -= Input.GetAxis("Horizontal") * rotSpeed * Time.deltaTime;
+		}
 		// Recreate the quaternion
 		rot = Quaternion.Euler( 0, 0, z );
 
@@ -59,7 +63,12 @@ public class PlayerController : MonoBehaviour {
 			// The playerPos move when Accelerate is pressed
 			Vector3 velocity = new Vector3(0,maxSpeed * Time.deltaTime, 0);
 			playerPos += (rot * velocity)*2;
-			Debug.Log(velocity);
+			this.GetComponent<AudioSource>().PlayOneShot(AccelerateSound);
+		}else if(Input.GetKey (KeyCode.Space)){
+			// The playerPos move when Accelerate is pressed
+			Vector3 velocity = new Vector3(0,maxSpeed * Time.deltaTime, 0);
+			playerPos += (rot * velocity)*2;
+			GetComponent<AudioSource>().PlayOneShot(AccelerateSound);
 		}
 
 		// Restrict player from getting out of the map bound

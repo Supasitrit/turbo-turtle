@@ -17,16 +17,16 @@ using System.Collections;
     		}
     	}
       void FixedUpdate() {
-        // Grab our rotation quaternion
-        Quaternion rot = target.rotation;
-
-        // Grab the Z euler angle
-        float z = rot.eulerAngles.z;
-
-        // Recreate the quaternion
-        rot = Quaternion.Euler( 0, 0, z );
-
-        // Feed the quaternion into our rotation
-        transform.rotation = rot;
+        // // Grab our rotation quaternion
+        // Quaternion rot = target.rotation;
+        //
+        // // Grab the Z euler angle
+        // float z = rot.eulerAngles.z;
+        //
+        // // Recreate the quaternion
+        // rot = Quaternion.Euler( 0, 0, z );
+        //
+        // // Feed the quaternion into our rotation
+        // transform.rotation = rot;
       }
  }
